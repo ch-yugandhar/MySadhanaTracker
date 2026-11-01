@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sadhana</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#c2631a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sadhana">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#faf6ee;--card:#fffdf8;--ink:#2b2418;--mute:#7a6d58;--line:#e8dfcc;--acc:#c2631a;--accbg:#fbe9d6;--ok:#3d7a4a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17130d;--card:#221c13;--ink:#f1e8d6;--mute:#a89b82;--line:#38301f;--acc:#e8893a;--accbg:#3a2813;--ok:#7bc489}}
+:root[data-theme="dark"]{--bg:#17130d;--card:#221c13;--ink:#f1e8d6;--mute:#a89b82;--line:#38301f;--acc:#e8893a;--accbg:#3a2813;--ok:#7bc489}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:620px;margin:0 auto;padding:16px}
+h1{font:600 22px Georgia,serif;margin:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nav{display:flex;align-items:center;gap:6px;margin:10px 0}
+.nav button{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 12px;font-size:16px;cursor:pointer}
+.nav .d{flex:1;text-align:center;font-weight:600}
+.stats{display:flex;gap:8px;margin:8px 0 14px}
+.stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-size:22px;color:var(--acc)}.stat span{font-size:12px;color:var(--mute)}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0 4px}.bar i{display:block;height:100%;background:var(--acc);transition:width .2s}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:14px}
+h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:0 0 6px;display:flex;justify-content:space-between}
+label.row{display:flex;gap:12px;align-items:center;padding:10px 4px;border-top:1px solid var(--line);cursor:pointer}
+label.row:first-of-type{border-top:0}
+input[type=checkbox]{appearance:none;width:24px;height:24px;border:2px solid var(--acc);border-radius:7px;flex:none;display:grid;place-content:center;cursor:pointer;margin:0}
+input[type=checkbox]:checked{background:var(--acc)}
+input[type=checkbox]:checked::after{content:"✓";color:#fff;font-size:16px;line-height:1}
+.n{color:var(--mute);width:20px;font-size:13px;flex:none}
+.t{flex:1}.done .t{color:var(--mute);text-decoration:line-through}
+.opt{font-size:12px;color:var(--mute)}
+.sevas{display:flex;gap:6px;margin:4px 0 8px 36px}
+.sevas button{width:34px;height:34px;border-radius:50%;border:2px solid var(--acc);background:none;color:var(--acc);font-weight:600;cursor:pointer}
+.sevas button.on{background:var(--acc);color:#fff}
+.slot{border-top:1px solid var(--line);padding:8px 0}.slot:first-of-type{border-top:0}
+.slot h3{margin:0 0 2px;font-size:15px;display:flex;justify-content:space-between}
+.slot h3 small{color:var(--mute);font-weight:400}
+.slot.cur{background:var(--accbg);border-radius:10px;padding:8px 8px}
+.hist{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;font-size:11px;color:var(--mute)}
+.hist div i{display:block;height:34px;border-radius:8px;background:var(--line);margin-top:3px;position:relative;overflow:hidden}
+.hist div i b{position:absolute;bottom:0;left:0;right:0;background:var(--acc)}
+.note{font-size:12px;color:var(--mute);text-align:center;margin:6px 0 20px}
+.bk{background:none;color:var(--acc);border:1px solid var(--acc);border-radius:8px;padding:9px 14px;font-size:15px;cursor:pointer;margin-right:6px}
+body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:contain}
+</style>
+</head>
+<body>
+<main>
+ <div class="top"><h1>Sadhana</h1><div class="opt" id="sync">Saved on this device</div></div>
+ <div class="nav"><button id="prev" aria-label="Previous day">‹</button><div class="d" id="date"></div><button id="next" aria-label="Next day">›</button><button id="today">Today</button></div>
+ <div class="stats">
+  <div class="stat"><b id="sToday">0/12</b><span>Morning</span></div>
+  <div class="stat"><b id="sStreak">0</b><span>Day streak</span></div>
+  <div class="stat"><b id="sDay">0/6</b><span>Day practices</span></div>
+ </div>
+ <div class="bar"><i id="pbar" style="width:0"></i></div>
+
+ <section><h2><span>Morning sadhana</span><span id="mcount"></span></h2><div id="morning"></div></section>
+ <section><h2><span>Through the day</span><span>Maathrabaddh swass + Nadi shodhan</span></h2><div id="slots"></div></section>
+ <section><h2><span>Last 7 days</span></h2><div class="hist" id="hist"></div></section>
+ <section><h2><span>Backup</span></h2>
+ <button id="exp" class="bk">Export backup</button>
+ <button id="imp" class="bk">Import backup</button>
+ <input type="file" id="file" accept="application/json,.json" style="display:none">
+ <div class="opt" style="margin-top:6px">Your log lives on this phone. Export now and then so a phone reset can't lose it.</div></section>
+ <div class="note">Streak counts days with all 12 morning steps done.</div>
+</main>
+<script>
+const STEPS=["Udhaya Dhyan","Remembering to see life like a play","Practice karuna","Remember to do 5 sevas in a day","Surya namaskarams","Bhutha shuddhi","Mathrika nyaas","Naag swass","Maathrabaddh swass","Nadi shodhan","Naam sumiran","Rest in shavasana for a few minutes"];
+const SLOTS=[["noon","12 pm"],["sunset","Sunset"],["night","Midnight"]];
+const PR=["Maathrabaddh swass","Nadi shodhan","Naam sumiran"];
+const SEVA_IDX=3;
+let all={}, cur=key(new Date()), sb=null, user=null;
+function key(d){const z=n=>String(n).padStart(2,"0");return d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate())}
+function parse(k){const[a,b,c]=k.split("-").map(Number);return new Date(a,b-1,c)}
+function shift(k,n){const d=parse(k);d.setDate(d.getDate()+n);return key(d)}
+function blank(){return{m:Array(12).fill(false),s:0,d:{noon:[false,false,false],sunset:[false,false,false],night:[false,false,false]},_u:0}}
+function get(k){return all[k]||(all[k]=blank())}
+function mdone(r){return r.m.filter(Boolean).length}
+function ddone(r){return SLOTS.reduce((a,[s])=>a+(r.d[s][0]?1:0)+(r.d[s][1]?1:0),0)}
+
+const $=id=>document.getElementById(id);
+function persist(){try{localStorage.setItem("sadhana",JSON.stringify(all))}catch(e){$("sync").textContent="Could not save!"}}
+function save(k){all[k]._u=Date.now();persist()}
+async function init(){
+  try{all=JSON.parse(localStorage.getItem("sadhana")||"{}")}catch(e){}
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+  render();
+  if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+function exportData(){
+  const b=new Blob([JSON.stringify(all)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="sadhana-backup-"+key(new Date())+".json";
+  document.body.append(a);a.click();a.remove();
+}
+function importData(f){
+  const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);
+    for(const k in d){if(!all[k]||(d[k]._u||0)>(all[k]._u||0))all[k]=Object.assign(blank(),d[k])}
+    persist();render();$("sync").textContent="Backup imported"}catch(e){$("sync").textContent="Not a valid backup file"}};
+  r.readAsText(f);
+}
+
+function streak(){
+  let k=key(new Date()),n=0;
+  if(!(all[k]&&mdone(all[k])===12))k=shift(k,-1); // today not finished yet doesn't break streak
+  while(all[k]&&mdone(all[k])===12){n++;k=shift(k,-1)}
+  return n;
+}
+function activeSlot(){
+  const h=new Date().getHours();
+  return h>=23||h<1?"night":(h>=11&&h<14)?"noon":(h>=17&&h<20)?"sunset":null;
+}
+
+function render(){
+  const r=get(cur), isToday=cur===key(new Date());
+  document.getElementById("date").textContent=parse(cur).toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"short",year:"numeric"});
+  document.getElementById("next").disabled=cur>=key(new Date());
+  document.getElementById("today").style.visibility=isToday?"hidden":"visible";
+  const m=mdone(r);
+  document.getElementById("sToday").textContent=m+"/12";
+  document.getElementById("sStreak").textContent=streak();
+  document.getElementById("sDay").textContent=ddone(r)+"/6";
+  document.getElementById("pbar").style.width=(m/12*100)+"%";
+  document.getElementById("mcount").textContent=m+" of 12";
+
+  const mEl=document.getElementById("morning");mEl.innerHTML="";
+  STEPS.forEach((t,i)=>{
+    const l=document.createElement("label");l.className="row"+(r.m[i]?" done":"");
+    const c=document.createElement("input");c.type="checkbox";c.checked=r.m[i];
+    c.onchange=()=>{r.m[i]=c.checked;save(cur);render()};
+    const n=document.createElement("span");n.className="n";n.textContent=i+1;
+    const s=document.createElement("span");s.className="t";s.textContent=t;
+    l.append(c,n,s);mEl.append(l);
+    if(i===SEVA_IDX){
+      const w=document.createElement("div");w.className="sevas";
+      for(let j=1;j<=5;j++){const b=document.createElement("button");b.textContent=j;b.className=j<=r.s?"on":"";b.title="Seva "+j;
+        b.onclick=()=>{r.s=(r.s===j?j-1:j);save(cur);render()};w.append(b)}
+      mEl.append(w);
+    }
+  });
+
+  const sEl=document.getElementById("slots");sEl.innerHTML="";
+  const act=isToday?activeSlot():null;
+  SLOTS.forEach(([id,name])=>{
+    const d=document.createElement("div");d.className="slot"+(id===act?" cur":"");
+    const h=document.createElement("h3");h.innerHTML="<span>"+name+"</span><small>"+(id===act?"now":"")+"</small>";d.append(h);
+    PR.forEach((p,i)=>{
+      const l=document.createElement("label");l.className="row"+(r.d[id][i]?" done":"");
+      const c=document.createElement("input");c.type="checkbox";c.checked=r.d[id][i];
+      c.onchange=()=>{r.d[id][i]=c.checked;save(cur);render()};
+      const s=document.createElement("span");s.className="t";s.textContent=p;
+      l.append(c,s);
+      if(i===2){const o=document.createElement("span");o.className="opt";o.textContent="optional";l.append(o)}
+      d.append(l);
+    });
+    sEl.append(d);
+  });
+
+  const hEl=document.getElementById("hist");hEl.innerHTML="";
+  for(let i=6;i>=0;i--){
+    const k=shift(key(new Date()),-i),rr=all[k],p=rr?mdone(rr)/12*100:0;
+    const d=document.createElement("div");
+    d.innerHTML=parse(k).toLocaleDateString(undefined,{weekday:"short"}).slice(0,3)+'<i><b style="height:'+p+'%"></b></i>'+(rr?mdone(rr):0);
+    d.style.cursor="pointer";d.onclick=()=>{cur=k;render()};
+    hEl.append(d);
+  }
+}
+document.getElementById("prev").onclick=()=>{cur=shift(cur,-1);render()};
+document.getElementById("next").onclick=()=>{if(cur<key(new Date())){cur=shift(cur,1);render()}};
+document.getElementById("today").onclick=()=>{cur=key(new Date());render()};
+$("exp").onclick=exportData;
+$("imp").onclick=()=>$("file").click();
+$("file").onchange=e=>{if(e.target.files[0])importData(e.target.files[0]);e.target.value=""};
+init();
+</script>
+</body>
+</html>
